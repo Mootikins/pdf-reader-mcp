@@ -1,6 +1,6 @@
 {
-  "name": "@sylphlab/pdf-reader-mcp",
-  "version": "0.3.24",
+  "name": "@mootikins/pdf-reader-mcp",
+  "version": "0.4.0",
   "description": "An MCP server providing tools to read PDF files.",
   "type": "module",
   "bin": {
@@ -19,13 +19,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sylphlab/pdf-reader-mcp.git"
+    "url": "git+https://github.com/Mootikins/pdf-reader-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/sylphlab/pdf-reader-mcp/issues"
+    "url": "https://github.com/Mootikins/pdf-reader-mcp/issues"
   },
-  "homepage": "https://github.com/sylphlab/pdf-reader-mcp#readme",
-  "author": "Sylph AI <contact@sylphlab.ai> (https://sylphlab.ai)",
+  "homepage": "https://github.com/Mootikins/pdf-reader-mcp#readme",
+  "author": "Mootikins (https://github.com/mootikins)",
+  "contributors": [
+    "Sylph AI <contact@sylphlab.ai> (https://sylphlab.ai)",
+    "Mootikins (https://github.com/mootikins)"
+  ],
   "license": "MIT",
   "keywords": [
     "mcp",

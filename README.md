@@ -1,6 +1,8 @@
 [![MseeP.ai Security Assessment Badge](https://mseep.net/pr/sylphxltd-pdf-reader-mcp-badge.png)](https://mseep.ai/app/sylphxltd-pdf-reader-mcp)
 
-# PDF Reader MCP Server (@sylphlab/pdf-reader-mcp)
+# PDF Reader MCP Server (@mootikins/pdf-reader-mcp)
+
+> **Fork Notice**: This is a fork of the original [@sylphlab/pdf-reader-mcp](https://github.com/sylphxltd/pdf-reader-mcp) by [SylphLab](https://sylphlab.ai). This version includes fixes for stdio output issues and is maintained by [@Mootikins](https://github.com/Mootikins).
 
 <!-- Status Badges Area -->
 
@@ -25,7 +27,7 @@ Empower your AI agents (like Cline) with the ability to securely read and extrac
 Install as a dependency in your MCP host environment or project:
 
 ```bash
-pnpm add @sylphlab/pdf-reader-mcp # Or npm install / yarn add
+pnpm add @mootikins/pdf-reader-mcp # Or npm install / yarn add
 ```
 
 Configure your MCP host (e.g., `mcp_settings.json`) to use `npx`:
@@ -35,7 +37,7 @@ Configure your MCP host (e.g., `mcp_settings.json`) to use `npx`:
   "mcpServers": {
     "pdf-reader-mcp": {
       "command": "npx",
-      "args": ["@sylphlab/pdf-reader-mcp"],
+      "args": ["@mootikins/pdf-reader-mcp"],
       "name": "PDF Reader (npx)"
     }
   }
@@ -75,7 +77,7 @@ Configure your MCP host to run the container, mounting your project directory to
 
 ### Local Build (For Development)
 
-1. Clone: `git clone https://github.com/sylphlab/pdf-reader-mcp.git`
+1. Clone: `git clone https://github.com/Mootikins/pdf-reader-mcp.git`
 2. Install: `cd pdf-reader-mcp && pnpm install`
 3. Build: `pnpm run build`
 4. Configure MCP Host:
@@ -135,6 +137,12 @@ Assuming the server is running and configured in your MCP host:
   ]
 }
 ```
+
+## What's Fixed in This Fork?
+
+- **🔧 Fixed stdio output issues**: Resolved problems with stderr output that could interfere with MCP communication
+- **📦 Updated dependencies**: Latest security patches and dependency updates
+- **🛠️ Maintained by @Mootikins**: Active maintenance and issue resolution
 
 ## Why Choose This Project?
 
@@ -209,9 +217,13 @@ For detailed usage, API reference, and guides, please visit the **[Full Document
 
 ## Community & Support
 
-- **Found a bug or have a feature request?** Please open an issue on [GitHub Issues](https://github.com/sylphlab/pdf-reader-mcp/issues).
+- **Found a bug or have a feature request?** Please open an issue on [GitHub Issues](https://github.com/Mootikins/pdf-reader-mcp/issues).
 - **Want to contribute?** We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md).
-- **Star & Watch:** If you find this project useful, please consider starring ⭐ and watching 👀 the repository on [GitHub](https://github.com/sylphlab/pdf-reader-mcp) to show your support and stay updated!
+- **Star & Watch:** If you find this project useful, please consider starring ⭐ and watching 👀 the repository on [GitHub](https://github.com/Mootikins/pdf-reader-mcp) to show your support and stay updated!
+
+## Original Project
+
+This project is based on the excellent work by [SylphLab](https://sylphlab.ai). Please check out their [original repository](https://github.com/sylphxltd/pdf-reader-mcp) and consider supporting their work as well.
 
 ## License
 
