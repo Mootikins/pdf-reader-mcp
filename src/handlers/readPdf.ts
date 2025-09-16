@@ -183,11 +183,12 @@ const loadPdfDocument = async (
   source: { path?: string | undefined; url?: string | undefined }, // Explicitly allow undefined
   sourceDescription: string
 ): Promise<pdfjsLib.PDFDocumentProxy> => {
-  let pdfDataSource: Buffer | { url: string };
+  let pdfDataSource: Uint8Array | { url: string };
   try {
     if (source.path) {
       const safePath = resolvePath(source.path); // resolvePath handles security checks
-      pdfDataSource = await fs.readFile(safePath);
+      const fileBuffer = await fs.readFile(safePath);
+      pdfDataSource = new Uint8Array(fileBuffer);
     } else if (source.url) {
       pdfDataSource = { url: source.url };
     } else {
@@ -253,7 +254,7 @@ const extractMetadataAndPageCount = async (
         output.info = infoData;
       }
       const metadataObj = pdfMetadata.metadata;
-      const metadataData = metadataObj.getAll() as PdfMetadata | undefined;
+      const metadataData = metadataObj.getRaw() as PdfMetadata | undefined;
       if (metadataData !== undefined) {
         output.metadata = metadataData;
       }
