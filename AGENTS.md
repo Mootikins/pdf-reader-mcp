@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**PDF Reader MCP Server** (@mootikins/pdf-reader-mcp) is a Model Context Protocol (MCP) server that provides secure PDF reading capabilities for AI agents like Claude. This is a fork of the original @sylphlab/pdf-reader-mcp with fixes for stdio output issues and updated dependencies.
+**PDF Reader MCP Server** (@mootikins/pdf-reader-mcp) is a Model Context Protocol (MCP) server that provides secure PDF reading capabilities for AI agents like Claude. This is a fork of the original @sylphlab/pdf-reader-mcp with fixes for stdio output issues, configurable directory restrictions, and updated dependencies.
 
 ## Core Architecture
 
@@ -34,7 +34,7 @@
 - Retrieve PDF metadata (author, title, creation date, etc.)
 - Get total page count
 - Process multiple PDF sources (local paths or URLs) in single request
-- Secure path resolution within project boundaries
+- Secure path resolution with configurable directory restrictions
 
 **Input Schema:**
 
@@ -79,8 +79,9 @@
 
 ### Path Security
 
-- **Project Root Confinement**: All file access restricted to server's working directory
-- **Path Traversal Protection**: Prevents access outside project boundaries via `../` sequences
+- **Configurable Directory Restrictions**: Optionally restrict file access to specific directories via command line arguments
+- **Project Root Fallback**: Defaults to server's working directory when no restrictions specified
+- **Path Traversal Protection**: Prevents access outside allowed boundaries via `../` sequences
 - **Absolute Path Rejection**: Only relative paths allowed for local files
 - **Input Validation**: Strict Zod schema validation for all inputs
 
@@ -125,6 +126,9 @@
 ```bash
 pnpm add @mootikins/pdf-reader-mcp
 npx @mootikins/pdf-reader-mcp
+
+# With directory restrictions
+npx @mootikins/pdf-reader-mcp /path/to/documents /path/to/pdfs
 ```
 
 ### Local Development
@@ -134,6 +138,9 @@ git clone https://github.com/Mootikins/pdf-reader-mcp.git
 cd pdf-reader-mcp
 pnpm install && pnpm build
 node dist/index.js
+
+# With directory restrictions
+node dist/index.js /path/to/documents /path/to/pdfs
 ```
 
 ## Performance Characteristics
@@ -164,6 +171,20 @@ Configure in your MCP host's settings (e.g., `mcp_settings.json`):
 }
 ```
 
+**With Directory Restrictions:**
+
+```json
+{
+  "mcpServers": {
+    "pdf-reader-mcp": {
+      "command": "npx",
+      "args": ["@mootikins/pdf-reader-mcp", "/path/to/documents", "/path/to/pdfs"],
+      "name": "PDF Reader (Restricted)"
+    }
+  }
+}
+```
+
 ### Usage Patterns
 
 1. **Document Analysis**: Extract full text for content analysis
@@ -171,6 +192,7 @@ Configure in your MCP host's settings (e.g., `mcp_settings.json`):
 3. **Metadata Inspection**: Retrieve document properties and info
 4. **Multi-Source Processing**: Handle multiple PDFs in single request
 5. **URL Processing**: Access remote PDFs via HTTPS
+6. **Restricted Access**: Limit PDF access to specific directories for enhanced security
 
 ### Error Recovery
 
@@ -180,6 +202,7 @@ The server handles errors gracefully:
 - Missing pages generate warnings but don't fail the operation
 - Network issues with URLs are reported per-source
 - Path security violations throw descriptive errors
+- Directory restriction violations are clearly reported
 
 ## Contributing
 
@@ -190,6 +213,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup, testing procedur
 This fork is maintained by [@Mootikins](https://github.com/Mootikins) with focus on:
 
 - Resolving stdio output compatibility issues
+- Adding configurable directory restrictions for enhanced security
 - Keeping dependencies updated and secure
 - Improving error handling and robustness
 - Maintaining compatibility with MCP protocol updates

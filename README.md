@@ -44,36 +44,27 @@ Configure your MCP host (e.g., `mcp_settings.json`) to use `npx`:
 }
 ```
 
-_(Ensure the host sets the correct `cwd` for the target project)_
+**Optional: Restrict PDF Access to Specific Directories**
 
-### Using Docker
-
-Pull the image:
-
-```bash
-docker pull sylphlab/pdf-reader-mcp:latest
-```
-
-Configure your MCP host to run the container, mounting your project directory to `/app`:
+For enhanced security, you can restrict PDF access to specific directories by passing them as command arguments:
 
 ```json
 {
   "mcpServers": {
     "pdf-reader-mcp": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-v",
-        "/path/to/your/project:/app", // Or use "$PWD:/app", "%CD%:/app", etc.
-        "sylphlab/pdf-reader-mcp:latest"
-      ],
-      "name": "PDF Reader (Docker)"
+      "command": "npx",
+      "args": ["@mootikins/pdf-reader-mcp", "/path/to/documents", "/path/to/pdfs"],
+      "name": "PDF Reader (Restricted)"
     }
   }
 }
 ```
+
+When directory arguments are provided, the server will only allow PDF access within those specified directories, providing an additional security layer beyond the default project root confinement.
+
+### Using Docker
+
+> **Note**: Docker support is not currently available in this fork. Use npm installation instead.
 
 ### Local Build (For Development)
 
@@ -86,13 +77,32 @@ Configure your MCP host to run the container, mounting your project directory to
      "mcpServers": {
        "pdf-reader-mcp": {
          "command": "node",
-         "args": ["/path/to/cloned/repo/pdf-reader-mcp/build/index.js"],
+         "args": ["/path/to/cloned/repo/pdf-reader-mcp/dist/index.js"],
          "name": "PDF Reader (Local Build)"
        }
      }
    }
    ```
-   _(Ensure the host sets the correct `cwd` for the target project)_
+
+**Directory Restrictions for Local Builds:**
+
+You can also restrict directory access when using local builds by adding directory arguments:
+
+```json
+{
+  "mcpServers": {
+    "pdf-reader-mcp": {
+      "command": "node",
+      "args": [
+        "/path/to/cloned/repo/pdf-reader-mcp/dist/index.js",
+        "/restricted/to/documents",
+        "/restricted/to/pdfs"
+      ],
+      "name": "PDF Reader (Local Restricted)"
+    }
+  }
+}
+```
 
 ## Quick Start
 
@@ -138,19 +148,20 @@ Assuming the server is running and configured in your MCP host:
 }
 ```
 
-## What's Fixed in This Fork?
+## What's New in This Fork?
 
 - **🔧 Fixed stdio output issues**: Resolved problems with stderr output that could interfere with MCP communication
+- **🔒 Directory restriction support**: Added ability to restrict PDF access to specific directories via command line arguments
 - **📦 Updated dependencies**: Latest security patches and dependency updates
 - **🛠️ Maintained by @Mootikins**: Active maintenance and issue resolution
 
 ## Why Choose This Project?
 
-- **🛡️ Secure:** Confines file access strictly to the project root directory.
+- **🛡️ Secure:** Confines file access to project root directory, with optional restriction to specific directories.
 - **🌐 Flexible:** Handles both local relative paths and public URLs.
 - **🧩 Consolidated:** A single `read_pdf` tool serves multiple extraction needs (full text, specific pages, metadata, page count).
 - **⚙️ Structured Output:** Returns data in a predictable JSON format, easy for agents to parse.
-- **🚀 Easy Integration:** Designed for seamless use within MCP environments via `npx` or Docker.
+- **🚀 Easy Integration:** Designed for seamless use within MCP environments via `npx`.
 - **✅ Robust:** Uses `pdfjs-dist` for reliable parsing and Zod for input validation.
 
 ## Performance Advantages
@@ -176,9 +187,9 @@ See the [Performance Documentation](./docs/performance/index.md) for more detail
 - Read PDF metadata (author, title, creation date, etc.).
 - Get the total page count of a PDF.
 - Process multiple PDF sources (local paths or URLs) in a single request.
-- Securely operates within the defined project root.
+- Securely operates within the defined project root, with optional directory restrictions.
 - Provides structured JSON output via MCP.
-- Available via npm and Docker Hub.
+- Available via npm.
 
 ## Design Philosophy
 

@@ -12,7 +12,8 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 // Import the aggregated tool definitions
 import { allToolDefinitions } from './handlers/index.js';
-// Removed incorrect import left over from partial diff
+// Import path utilities for directory configuration
+import { setValidRootDirectories } from './utils/pathUtils.js';
 
 // --- Tool Names (Constants) ---
 // Removed tool name constants, names are now in the definitions
@@ -21,9 +22,9 @@ import { allToolDefinitions } from './handlers/index.js';
 
 const server = new Server(
   {
-    name: 'filesystem-mcp',
-    version: '0.4.0', // Increment version for definition refactor
-    description: 'MCP Server for filesystem operations relative to the project root.',
+    name: 'pdf-reader-mcp',
+    version: '0.5.0',
+    description: 'MCP Server for PDF reading operations with configurable directory restrictions.',
   },
   {
     capabilities: { tools: {} },
@@ -66,9 +67,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 // --- Server Start ---
 
 async function main(): Promise<void> {
+  // Parse command line arguments for directory restrictions
+  const args = process.argv.slice(2);
+  if (args.length > 0) {
+    // All non-flag arguments are treated as valid directories
+    const directories = args.filter((arg) => !arg.startsWith('-'));
+    if (directories.length > 0) {
+      setValidRootDirectories(directories);
+    }
+  }
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('[Filesystem MCP] Server running on stdio');
+  console.warn('[PDF Reader MCP] Server running on stdio');
 }
 
 main().catch((error: unknown) => {

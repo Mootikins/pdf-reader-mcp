@@ -1,43 +1,37 @@
-import { describe, it, expect } from 'vitest'; // Removed beforeEach, vi
+import { describe, it, expect, beforeEach } from 'vitest';
 import path from 'path';
-import { resolvePath, PROJECT_ROOT } from '../src/utils/pathUtils.js'; // Add .js extension
+import { resolvePath, setValidRootDirectories } from '../src/utils/pathUtils.js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 
-// Mock PROJECT_ROOT for consistent testing if needed, or use the actual one
-// For this test, using the actual PROJECT_ROOT derived from process.cwd() is likely fine,
-// but be aware it depends on where the test runner executes.
-// If consistency across environments is critical, mocking might be better.
-// vi.mock('../src/utils/pathUtils', async (importOriginal) => {
-//   const original = await importOriginal();
-//   return {
-//     ...original,
-//     PROJECT_ROOT: '/mock/project/root', // Example mock path
-//   };
-// });
-
 describe('resolvePath Utility', () => {
+  const testProjectRoot = process.cwd();
+
+  beforeEach(() => {
+    // Reset to default behavior (no restrictions)
+    setValidRootDirectories([]);
+  });
   it('should resolve a valid relative path correctly', () => {
     const userPath = 'some/file.txt';
-    const expectedPath = path.resolve(PROJECT_ROOT, userPath);
+    const expectedPath = path.resolve(testProjectRoot, userPath);
     expect(resolvePath(userPath)).toBe(expectedPath);
   });
 
   it('should resolve paths with "." correctly', () => {
     const userPath = './some/./other/file.txt';
-    const expectedPath = path.resolve(PROJECT_ROOT, 'some/other/file.txt');
+    const expectedPath = path.resolve(testProjectRoot, 'some/other/file.txt');
     expect(resolvePath(userPath)).toBe(expectedPath);
   });
 
   it('should resolve paths with ".." correctly within the project root', () => {
     const userPath = 'some/folder/../other/file.txt';
-    const expectedPath = path.resolve(PROJECT_ROOT, 'some/other/file.txt');
+    const expectedPath = path.resolve(testProjectRoot, 'some/other/file.txt');
     expect(resolvePath(userPath)).toBe(expectedPath);
   });
 
   it('should throw McpError for path traversal attempts', () => {
     const userPath = '../outside/secret.txt';
     expect(() => resolvePath(userPath)).toThrow(McpError);
-    expect(() => resolvePath(userPath)).toThrow('Path traversal detected. Access denied.');
+    expect(() => resolvePath(userPath)).toThrow('is not within any allowed directory');
     try {
       resolvePath(userPath);
     } catch (e) {
@@ -48,10 +42,10 @@ describe('resolvePath Utility', () => {
 
   it('should throw McpError for path traversal attempts even if seemingly valid', () => {
     // Construct a path that uses '..' many times to try and escape
-    const levelsUp = PROJECT_ROOT.split(path.sep).filter(Boolean).length + 2; // Go up more levels than the root has
+    const levelsUp = testProjectRoot.split(path.sep).filter(Boolean).length + 2; // Go up more levels than the root has
     const userPath = path.join(...(Array(levelsUp).fill('..') as string[]), 'secret.txt'); // Cast array to string[]
     expect(() => resolvePath(userPath)).toThrow(McpError);
-    expect(() => resolvePath(userPath)).toThrow('Path traversal detected. Access denied.');
+    expect(() => resolvePath(userPath)).toThrow('is not within any allowed directory');
     try {
       resolvePath(userPath);
     } catch (e) {
@@ -61,7 +55,7 @@ describe('resolvePath Utility', () => {
   });
 
   it('should throw McpError for absolute paths', () => {
-    const userPath = path.resolve(PROJECT_ROOT, 'absolute/file.txt'); // An absolute path
+    const userPath = path.resolve(testProjectRoot, 'absolute/file.txt'); // An absolute path
     const userPathPosix = '/absolute/file.txt'; // POSIX style absolute path
     const userPathWin = 'C:\\absolute\\file.txt'; // Windows style absolute path
 
@@ -102,7 +96,30 @@ describe('resolvePath Utility', () => {
 
   it('should handle empty string input', () => {
     const userPath = '';
-    const expectedPath = path.resolve(PROJECT_ROOT, ''); // Should resolve to the project root itself
+    const expectedPath = path.resolve(testProjectRoot, ''); // Should resolve to the project root itself
+    expect(resolvePath(userPath)).toBe(expectedPath);
+  });
+
+  it('should work with custom valid directories', () => {
+    const customDir = '/tmp/test-pdfs';
+    setValidRootDirectories([customDir]);
+
+    const userPath = 'document.pdf';
+    const expectedPath = path.resolve(customDir, userPath);
+    expect(resolvePath(userPath)).toBe(expectedPath);
+
+    // Should reject paths outside the custom directory
+    expect(() => resolvePath('../outside.pdf')).toThrow(McpError);
+  });
+
+  it('should work with multiple valid directories', () => {
+    const dir1 = '/tmp/pdfs1';
+    const dir2 = '/tmp/pdfs2';
+    setValidRootDirectories([dir1, dir2]);
+
+    const userPath = 'doc.pdf';
+    // Should resolve to the first matching directory
+    const expectedPath = path.resolve(dir1, userPath);
     expect(resolvePath(userPath)).toBe(expectedPath);
   });
 });
