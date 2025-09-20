@@ -164,8 +164,8 @@ const getContextAroundMatch = (
   if (depth === 0) {
     // Just surrounding words
     const words = textItems.map((item) => item.str);
-    let start = Math.max(0, matchIndex - contextWords);
-    let end = Math.min(words.length, matchIndex + contextWords + 1);
+    const start = Math.max(0, matchIndex - contextWords);
+    const end = Math.min(words.length, matchIndex + contextWords + 1);
     return words.slice(start, end).join(' ');
   } else {
     // For depth > 0, we would need more sophisticated parsing to identify blocks/sections
@@ -176,6 +176,7 @@ const getContextAroundMatch = (
 };
 
 // Search for text in a specific page
+ 
 const searchPage = async (
   pdfDocument: pdfjsLib.PDFDocumentProxy,
   pageNum: number,
@@ -199,7 +200,7 @@ const searchPage = async (
     const searchTarget = caseSensitive ? fullText : fullText.toLowerCase();
 
     let offset = 0;
-    while (true) {
+    while (offset < searchTarget.length) {
       const matchIndex = searchTarget.indexOf(searchText, offset);
       if (matchIndex === -1) break;
 
@@ -231,7 +232,7 @@ const searchPage = async (
       offset = matchIndex + 1;
     }
   } catch (error) {
-    console.warn(`[PDF Reader MCP] Error searching page ${pageNum}:`, error);
+    console.warn(`[PDF Reader MCP] Error searching page ${String(pageNum)}:`, error);
   }
 
   return results;
@@ -303,7 +304,7 @@ export const handleSearchPdfTextFunc = async (
 
     if (allResults.length > max_results) {
       warnings.push(
-        `Found ${allResults.length} matches, but only returning first ${max_results} results.`
+        `Found ${String(allResults.length)} matches, but only returning first ${String(max_results)} results.`
       );
     }
 

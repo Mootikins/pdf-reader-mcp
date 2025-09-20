@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, beforeAll, afterEach } from 'vitest';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError } from '@modelcontextprotocol/sdk/types.js';
 import * as pathUtils from '../../src/utils/pathUtils.js';
 
 // --- Mocking pdfjs-dist ---
@@ -33,10 +33,10 @@ beforeAll(async () => {
 });
 
 describe('getPdfToc Handler', () => {
-  const mockPdfDocument = {
-    getOutline: mockGetOutline,
-    numPages: 5,
-  };
+  // const mockPdfDocument = {
+  //   getOutline: mockGetOutline,
+  //   numPages: 5,
+  // };
 
   beforeEach(() => {
     vi.resetAllMocks();
@@ -159,7 +159,7 @@ describe('getPdfToc Handler', () => {
   it('should handle file not found error', async () => {
     vi.spyOn(pathUtils, 'resolvePath').mockImplementation(() => {
       const error = new Error('ENOENT');
-      (error as any).code = 'ENOENT';
+      (error as Error & { code: string }).code = 'ENOENT';
       throw error;
     });
 
@@ -175,7 +175,7 @@ describe('getPdfToc Handler', () => {
   });
 
   it('should validate required parameters', async () => {
-    const args = {} as any;
+    const args = {} as unknown;
 
     await expect(handler(args)).rejects.toThrow(McpError);
   });

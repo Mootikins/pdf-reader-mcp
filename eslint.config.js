@@ -61,6 +61,8 @@ export default tseslint.config(
     // Configuration for specific files to relax rules
     files: [
       'src/handlers/readPdf.ts',
+      'src/handlers/getPdfToc.ts',
+      'src/handlers/searchPdfText.ts',
       'test/**/*.ts', // Includes .test.ts and .bench.ts
     ],
     rules: {

@@ -116,7 +116,7 @@ const extractOutlineItems = (
     )
     .map((item) => {
       const tocItem: TocItem = {
-        title: String(item['title'] || ''),
+        title: (item['title'] as string) || '',
       };
 
       // Extract page number if available
@@ -125,8 +125,9 @@ const extractOutlineItems = (
       }
 
       // Try to extract page number from destination
-      if (Array.isArray(item['dest']) && item['dest'].length > 0) {
-        const destPage = item['dest'][0];
+      const dest = item['dest'];
+      if (Array.isArray(dest) && dest.length > 0) {
+        const destPage = dest[0];
         if (typeof destPage === 'number') {
           tocItem.page = destPage + 1; // PDF.js uses 0-based indexing
         }
