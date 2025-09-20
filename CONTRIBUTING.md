@@ -5,7 +5,6 @@ Thank you for considering contributing! We welcome contributions from the commun
 ## How to Contribute
 
 1.  **Reporting Issues:** If you find a bug or have a feature request, please open an issue on GitHub.
-
     - Provide a clear description of the issue.
     - Include steps to reproduce (for bugs).
     - Explain the motivation for the feature request.

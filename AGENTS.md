@@ -36,18 +36,96 @@
 - Process multiple PDF sources (local paths or URLs) in single request
 - Secure path resolution with configurable directory restrictions
 
+### `get_pdf_toc`
+
+**Extract table of contents/outline from PDF files**
+
+**Capabilities:**
+
+- Extract hierarchical table of contents with titles and page numbers
+- Configure maximum depth of outline items to extract
+- Preserve destination information for each outline item
+- Handle PDFs without table of contents gracefully
+
 **Input Schema:**
 
 ```typescript
 {
-  sources: Array<{
+  source: {
     path?: string;     // Relative path to local PDF
     url?: string;      // URL to remote PDF
-    pages?: number[] | string; // Specific pages (e.g., [1,3] or "1-3,5,7-")
-  }>;
-  include_full_text?: boolean;    // Default: false
-  include_metadata?: boolean;     // Default: true
-  include_page_count?: boolean;   // Default: true
+  };
+  max_depth?: number;  // Maximum depth to extract (default: 5)
+}
+```
+
+**Output Format:**
+
+```typescript
+{
+  success: boolean;
+  data?: {
+    outline?: Array<{
+      title: string;
+      page?: number;
+      destination?: unknown;
+      items?: Array<...>; // Nested outline items
+    }>;
+    warnings?: string[];
+  };
+  error?: string;
+}
+```
+
+### `search_pdf_text`
+
+**Search for text within PDF files with configurable context depth**
+
+**Capabilities:**
+
+- Search for specific text with case-sensitive or case-insensitive matching
+- Configure context depth around matches (0-5 levels)
+- Return surrounding text context based on depth setting
+  - Depth 0: Match word + surrounding words only
+  - Depth 1-5: Increasing context (block → section → chapter → part → full page)
+- Limit number of results with pagination support
+- Search specific pages or entire document
+- Return page numbers for all matches
+
+**Input Schema:**
+
+```typescript
+{
+  source: {
+    path?: string;     // Relative path to local PDF
+    url?: string;      // URL to remote PDF
+  };
+  query: string;       // Text to search for
+  depth?: number;      // Context depth: 0-5 (default: 0)
+  max_results?: number; // Maximum results (default: 20)
+  page?: number;       // Specific page to search (optional)
+  case_sensitive?: boolean; // Case sensitive search (default: false)
+  context_words?: number; // Surrounding words for depth=0 (default: 5)
+}
+```
+
+**Output Format:**
+
+```typescript
+{
+  success: boolean;
+  data?: {
+    results: Array<{
+      page: number;
+      text: string;        // Matched text
+      match_start: number; // Start position
+      match_end: number;   // End position
+      context?: string;    // Context based on depth
+    }>;
+    total_matches: number;
+    warnings?: string[];
+  };
+  error?: string;
 }
 ```
 
@@ -193,6 +271,8 @@ Configure in your MCP host's settings (e.g., `mcp_settings.json`):
 4. **Multi-Source Processing**: Handle multiple PDFs in single request
 5. **URL Processing**: Access remote PDFs via HTTPS
 6. **Restricted Access**: Limit PDF access to specific directories for enhanced security
+7. **Table of Contents Extraction**: Navigate PDF structure using outline/bookmarks
+8. **Text Search with Context**: Find content with configurable context depth for precise results
 
 ### Error Recovery
 

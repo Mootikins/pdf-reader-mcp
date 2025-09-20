@@ -1,5 +1,7 @@
-// Import only the consolidated PDF tool definition
+// Import all tool definitions
 import { readPdfToolDefinition } from './readPdf.js';
+import { getPdfTocToolDefinition } from './getPdfToc.js';
+import { searchPdfTextToolDefinition } from './searchPdfText.js';
 
 // Define the structure for a tool definition (used internally and for index.ts)
 // We need Zod here to define the schema type correctly
@@ -12,5 +14,9 @@ export interface ToolDefinition {
   handler: (args: unknown) => Promise<{ content: { type: string; text: string }[] }>;
 }
 
-// Aggregate only the consolidated PDF tool definition
-export const allToolDefinitions: ToolDefinition[] = [readPdfToolDefinition];
+// Aggregate all tool definitions
+export const allToolDefinitions: ToolDefinition[] = [
+  readPdfToolDefinition,
+  getPdfTocToolDefinition,
+  searchPdfTextToolDefinition,
+];
