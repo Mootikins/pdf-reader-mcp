@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["deno.window"],
+    "strict": true
+  },
+  "imports": {
+    "@modelcontextprotocol/sdk": "npm:@modelcontextprotocol/sdk@^1.18.0",
+    "pdfjs-dist": "npm:pdfjs-dist@^5.4.149",
+    "zod": "npm:zod@^3.24.2",
+    "zod-to-json-schema": "npm:zod-to-json-schema@^3.24.5"
+  },
+  "tasks": {
+    "start": "deno run --allow-read --allow-net --allow-env src/index.ts",
+    "test": "deno test --allow-read --allow-net --allow-env",
+    "fmt": "deno fmt",
+    "lint": "deno lint"
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 80,
+    "indentWidth": 2,
+    "semiColons": true,
+    "singleQuote": false,
+    "proseWrap": "preserve"
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  }
+}

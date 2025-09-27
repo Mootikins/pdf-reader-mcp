@@ -4,6 +4,10 @@ build/
 *.log
 coverage/
 .env*
+.eslintcache
+
+# Build outputs
+dist/
 
 # VitePress
 docs/.vitepress/dist
@@ -11,3 +15,8 @@ docs/.vitepress/cache
 
 # Test Reports
 test-report.junit.xml
+
+# Runtime caches
+.bun/
+.deno/
+bun.lockb

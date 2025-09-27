@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import fs from 'node:fs/promises';
+import { readFile } from '../utils/runtime.js';
 import { resolvePath } from '../utils/pathUtils.js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import type { ToolDefinition } from './index.js';
@@ -56,8 +56,8 @@ const loadPdfDocument = async (
   try {
     if (source.path) {
       const safePath = resolvePath(source.path);
-      const fileBuffer = await fs.readFile(safePath);
-      pdfDataSource = new Uint8Array(fileBuffer);
+      const fileBuffer = await readFile(safePath);
+      pdfDataSource = fileBuffer;
     } else if (source.url) {
       pdfDataSource = { url: source.url };
     } else {
@@ -179,7 +179,7 @@ export const handleGetPdfTocFunc = async (
     const outline = await pdfDocument.getOutline();
     const data: TocResultData = {};
 
-    if (outline && outline.length > 0) {
+    if (outline.length > 0) {
       data.outline = extractOutlineItems(outline, 1, max_depth);
     } else {
       data.warnings = ['No table of contents found in this PDF.'];

@@ -1,0 +1,15 @@
+[install]
+# Use npm registry for packages
+registry = "https://registry.npmjs.org/"
+
+[install.cache]
+# Cache directory for Bun
+directory = ".bun"
+
+[run]
+# Enable TypeScript by default
+bun = "bun run"
+
+[test]
+# Test configuration
+preload = ["./test/setup.ts"]

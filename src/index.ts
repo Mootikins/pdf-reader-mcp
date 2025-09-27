@@ -14,6 +14,8 @@ import {
 import { allToolDefinitions } from './handlers/index.js';
 // Import path utilities for directory configuration
 import { setValidRootDirectories } from './utils/pathUtils.js';
+// Import runtime utilities for cross-platform compatibility
+import { getCommandLineArgs, exitProcess } from './utils/runtime.js';
 
 // --- Tool Names (Constants) ---
 // Removed tool name constants, names are now in the definitions
@@ -68,7 +70,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 async function main(): Promise<void> {
   // Parse command line arguments for directory restrictions
-  const args = process.argv.slice(2);
+  const args = getCommandLineArgs();
   if (args.length > 0) {
     // All non-flag arguments are treated as valid directories
     const directories = args.filter((arg) => !arg.startsWith('-'));
@@ -84,6 +86,6 @@ async function main(): Promise<void> {
 
 main().catch((error: unknown) => {
   // Specify 'unknown' type for catch variable
-  console.error('[Filesystem MCP] Server error:', error);
-  process.exit(1);
+  console.error('[PDF Reader MCP] Server error:', error);
+  exitProcess(1);
 });

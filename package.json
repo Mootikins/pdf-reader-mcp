@@ -15,7 +15,8 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=22.0.0",
+    "bun": ">=1.0.0"
   },
   "repository": {
     "type": "git",
@@ -59,6 +60,8 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "start": "node dist/index.js",
+    "start:bun": "bun run src/index.ts",
+    "start:deno": "deno run --allow-read --allow-net --allow-env src/index.ts",
     "typecheck": "tsc --noEmit",
     "benchmark": "vitest bench",
     "clean": "rm -rf dist coverage",

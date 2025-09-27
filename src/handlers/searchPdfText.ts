@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import fs from 'node:fs/promises';
+import { readFile } from '../utils/runtime.js';
 import { resolvePath } from '../utils/pathUtils.js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import type { ToolDefinition } from './index.js';
@@ -88,8 +88,8 @@ const loadPdfDocument = async (
   try {
     if (source.path) {
       const safePath = resolvePath(source.path);
-      const fileBuffer = await fs.readFile(safePath);
-      pdfDataSource = new Uint8Array(fileBuffer);
+      const fileBuffer = await readFile(safePath);
+      pdfDataSource = fileBuffer;
     } else if (source.url) {
       pdfDataSource = { url: source.url };
     } else {

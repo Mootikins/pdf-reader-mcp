@@ -1,6 +1,7 @@
 import path from 'path';
 // Removed unused import: import { fileURLToPath } from 'url';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { getCurrentWorkingDirectory } from './runtime.js';
 
 // Valid root directories for PDF access (absolute paths)
 // If empty, falls back to CWD for backwards compatibility
@@ -25,7 +26,7 @@ export const setValidRootDirectories = (directories: string[]): void => {
  * @returns Array of absolute directory paths, or [process.cwd()] if none set
  */
 export const getValidRootDirectories = (): string[] => {
-  return validRootDirectories.length > 0 ? validRootDirectories : [process.cwd()];
+  return validRootDirectories.length > 0 ? validRootDirectories : [getCurrentWorkingDirectory()];
 };
 
 /**
