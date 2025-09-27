@@ -1,6 +1,6 @@
 {
   "name": "@mootikins/pdf-reader-mcp",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "An MCP server providing secure PDF reading tools with configurable directory restrictions.",
   "type": "module",
   "bin": {
